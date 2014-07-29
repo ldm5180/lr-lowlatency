@@ -1,0 +1,36 @@
+real-server rs-default
+ ip address <REAL_SERVER_IP> 80
+ admin-status online
+!
+real-server rs-random
+ ip address 127.0.0.1 7080
+ admin-status online
+!
+virtual-ip vip-backup
+ ip address 127.0.0.1 8080
+ admin-status online
+!
+virtual-ip vip-default
+ ip address <LOCAL_IP> 80
+ admin-status online
+!
+virtual-ip vip-random
+ ip address 127.0.0.1 7080
+ admin-status online
+!
+virtual-server vs-backup
+ attach virtual-ip vip-backup default
+ attach real-server rs-default
+!
+virtual-server vs-default
+ attach virtual-ip vip-default default
+ attach real-server rs-random
+!
+virtual-server vs-random
+ attach virtual-ip vip-random default
+ attach real-server rs-default
+!
+script low-latency
+ source file "low-latency.js"
+ admin-status online
+
